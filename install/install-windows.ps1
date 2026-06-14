@@ -23,5 +23,5 @@ if (Test-Path $dest) {
 Write-Host ""
 Write-Host "Done. Now:"
 Write-Host "  1. Restart SillyTavern."
-Write-Host "  2. Open it at http://localhost (NOT a 192.168.x.x address) in Chrome or Edge."
+Write-Host "  2. Open it at http://localhost or http://127.0.0.1 (a plain LAN IP will not count as secure) in Chrome or Edge."
 Write-Host "  3. Hard-reload (Ctrl+Shift+R). Click the heart button bottom-left."

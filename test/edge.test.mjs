@@ -18,6 +18,7 @@ import { classifyMessage, classifyIncidental, calibrateCharacter } from '../lib/
 import { createSensors } from '../lib/lelo-sensors.js';
 import { PROTOCOLS, PROTOCOL_IDS, encodeFor } from '../lib/protocols.js';
 import { rumbleMagnitudes } from '../lib/gamepad.js';
+import { waveform, liftSpin } from '../lib/lelo-actuator.js';
 
 // ---- tiny assert framework -------------------------------------------------
 let pass = 0, fail = 0; const fails = [];
@@ -437,6 +438,32 @@ t('rumbleMagnitudes bounded for any input, strong>=weak, monotonic', () => {
     ok(rumbleMagnitudes(1).strong > rumbleMagnitudes(0.5).strong, 'monotonic');
     eq(rumbleMagnitudes(0).strong, 0, 'zero -> zero');
     eq(rumbleMagnitudes(NaN).strong, 0, 'NaN -> zero');
+});
+
+// ============================================================================
+// 9. ACTUATOR ENVELOPE — the motor-amplitude bound (overdrive = unsafe)
+// ============================================================================
+
+t('waveform() stays in [0,1] for every act waveform, full phase, all regularities', () => {
+    const names = new Set(['steady', 'stroke', 'thrust', 'suction', 'grind', 'crescendo', 'tease',
+        ...Object.values(ACT_PATTERNS).map((p) => p.waveform)]);
+    for (const name of names) {
+        for (const reg of [0, 0.4, 0.7, 1]) {
+            for (let i = 0; i <= 96; i++) {
+                const v = waveform(name, (i / 96) * Math.PI * 2, { regularity: reg });
+                ok(Number.isFinite(v), `${name} finite`);
+                inRange(v, 0, 1, `${name}@reg${reg}`);
+            }
+        }
+    }
+});
+
+t('liftSpin(): dead-zone -> 0, sub-spin band lifted to MOTOR_MIN_SPIN, high passthrough', () => {
+    eq(liftSpin(0), 0, 'zero');
+    eq(liftSpin(0.02), 0, 'below MIN_SPIN_LIFT -> 0');
+    eq(liftSpin(0.15), BLE.MOTOR_MIN_SPIN, 'dead-zone lifted');
+    eq(liftSpin(0.9), 0.9, 'passthrough');
+    inRange(liftSpin(0.5), 0, 1, 'bounded');
 });
 
 // ---- report ----------------------------------------------------------------

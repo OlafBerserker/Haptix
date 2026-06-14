@@ -24,5 +24,5 @@ fi
 echo
 echo "Done. Now:"
 echo "  1. Restart SillyTavern."
-echo "  2. Open it at http://localhost (NOT a 192.168.x.x address) in Chrome or Edge."
+echo "  2. Open it at http://localhost or http://127.0.0.1 (a plain LAN IP will not count as secure) in Chrome or Edge."
 echo "  3. Hard-reload (Ctrl+Shift+R). Click the heart button bottom-left."

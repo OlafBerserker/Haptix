@@ -1,0 +1,21 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: edge + integration (no hardware)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Edge-case harness (safety clamps, encoders, sequences, classifier, sensors)
+        run: node test/edge.test.mjs
+      - name: Integration (message -> classify -> actuate, mocked browser + LLM)
+        run: node test/integration.test.mjs
