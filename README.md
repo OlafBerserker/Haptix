@@ -127,16 +127,16 @@ Yes. Genuinely. This ridiculous thing has a **CI pipeline,** and I would like th
 
 ```
 $ npm test
-Haptix edge-case harness:  47 passed, 0 failed
+Haptix edge-case harness:  51 passed, 0 failed
 Haptix integration:        12 passed, 0 failed
 ```
 
 Two hardware-free, fully deterministic suites run on every push (and locally via `npm test`):
 
-- **Edge-case harness** (`test/edge.test.mjs`, 47 checks) — the safety-critical layer, pinned in code so a refactor can't silently unbound it: safety-gate clamps (NaN / Infinity / negative / over-cap → 0), ramp + oscillation limits, dead-man + heartbeat watchdogs; motor-command encoders (every byte stays in range for **any** input); pattern sequences + the actuator waveform envelope (amplitude provably in `[0,1]` — no motor overdrive); the classifier's **contact gate** (atmosphere does **not** fire the motor — the cardinal sin); and sensor decode + config integrity.
+- **Edge-case harness** (`test/edge.test.mjs`, 51 checks) — the safety-critical layer, pinned in code so a refactor can't silently unbound it: safety-gate clamps (NaN / Infinity / negative / over-cap → 0), ramp + oscillation limits, dead-man + heartbeat watchdogs; motor-command encoders (every byte stays in range for **any** input); pattern sequences + the actuator waveform envelope (amplitude provably in `[0,1]` — no motor overdrive); the classifier's **contact gate** (atmosphere does **not** fire the motor — the cardinal sin); the LLM-reply parser (code-fences, prose, contradictions, garbage → safe); and sensor decode + config integrity.
 - **Integration** (`test/integration.test.mjs`, 12 checks) — boots the controller against a mocked browser + LLM and drives full **message → classify → actuate** flows: the LLM contact path, the regex fallback, the no-misfire guard, and the consent gate (disarmed = nothing moves, period).
 
-No device and no LLM needed to run them — the only dignified way to test this.
+No device and no LLM needed to run those two — the only dignified way to test this. There's also an **opt-in live test** (`test/live/classifier-live.mjs`) that fires the *real* classifier prompt at a running LLM across 18 adversarial messages (metaphor, dialogue, hypotheticals, broken grammar, every act). Last run: **18/18, zero misfires** — atmosphere never moved the motor.
 
 ---
 

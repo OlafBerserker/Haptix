@@ -19,6 +19,7 @@ import { createSensors } from '../lib/lelo-sensors.js';
 import { PROTOCOLS, PROTOCOL_IDS, encodeFor } from '../lib/protocols.js';
 import { rumbleMagnitudes } from '../lib/gamepad.js';
 import { waveform, liftSpin } from '../lib/lelo-actuator.js';
+import { parseClassifierReply } from '../lib/core.js';
 
 // ---- tiny assert framework -------------------------------------------------
 let pass = 0, fail = 0; const fails = [];
@@ -464,6 +465,44 @@ t('liftSpin(): dead-zone -> 0, sub-spin band lifted to MOTOR_MIN_SPIN, high pass
     eq(liftSpin(0.15), BLE.MOTOR_MIN_SPIN, 'dead-zone lifted');
     eq(liftSpin(0.9), 0.9, 'passthrough');
     inRange(liftSpin(0.5), 0, 1, 'bounded');
+});
+
+// ============================================================================
+// 10. LLM REPLY PARSER — tolerant extraction (real models emit messy text)
+// ============================================================================
+
+t('parseClassifierReply: null / no-json / malformed -> null', () => {
+    eq(parseClassifierReply(null), null, 'null');
+    eq(parseClassifierReply('no json at all'), null, 'no json');
+    eq(parseClassifierReply('{ broken json'), null, 'unbalanced -> null');
+});
+
+t('parseClassifierReply: code fences + prose wrappers', () => {
+    const a = parseClassifierReply('```json\n{"contact":true,"act":"handjob","pace":"slow"}\n```');
+    ok(a && a.contact === true && a.act === 'handjob', 'fenced');
+    const b = parseClassifierReply('Sure, here: {"contact":false,"act":"none","pace":"steady"} hope this helps!');
+    ok(b && b.contact === false && b.act === null, 'prose-wrapped, act none -> null');
+    const e = parseClassifierReply('{"contact":false,"act":"none","pace":"steady"} {"junk":1}');
+    ok(e && e.contact === false, 'first balanced object wins');
+});
+
+t('parseClassifierReply: field coercions + enum guards', () => {
+    const c = parseClassifierReply('{"contact":"yes","act":"BLOWJOB","pace":"sideways","involuntary":"impact"}');
+    ok(c.contact === true, 'contact "yes"');
+    eq(c.act, 'blowjob', 'act lowercased');
+    eq(c.pace, 'steady', 'off-vocab pace -> steady');
+    eq(c.involuntary, 'impact', 'involuntary kept');
+    const z = parseClassifierReply('{"contact":true,"act":"foot massage","pace":"fast"}');
+    eq(z.act, null, 'off-vocab act -> null');
+});
+
+t('parseClassifierReply: a named act implies contact (repairs contradictions, fires climax)', () => {
+    const d = parseClassifierReply('{"contact":false,"act":"climax","pace":"fast"}');
+    ok(d.contact === true && d.act === 'climax', 'climax fires despite contact:false');
+    const f = parseClassifierReply('{"contact":false,"act":"blowjob","pace":"slow"}');
+    ok(f.contact === true, 'act implies contact');
+    const g = parseClassifierReply('{"contact":false,"act":"none","pace":"steady"}');
+    ok(g.contact === false, 'no act, no contact -> stays false (no misfire)');
 });
 
 // ---- report ----------------------------------------------------------------
