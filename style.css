@@ -1,0 +1,78 @@
+/* LELO F1S V3 haptic control panel — NSFW feature. Injected by haptic-panel.js. */
+
+#haptix-panel {
+    position: fixed;
+    right: 12px;
+    bottom: 64px;
+    width: 300px;
+    max-width: calc(100vw - 24px);
+    z-index: 10010;
+    background: var(--SmartThemeBlurTintColor, rgba(20, 16, 24, 0.92));
+    color: var(--SmartThemeBodyColor, #e8e0ea);
+    border: 1px solid rgba(220, 120, 200, 0.4);
+    border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+    padding: 10px 12px;
+    display: none;
+}
+#haptix-panel.open { display: block; }
+
+#haptix-panel h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#haptix-panel .htx-row { display: flex; justify-content: space-between; gap: 8px; margin: 4px 0; align-items: center; }
+#haptix-panel .htx-muted { opacity: 0.7; }
+#haptix-panel button { cursor: pointer; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: inherit; padding: 5px 9px; font-size: 12px; }
+#haptix-panel button:hover { background: rgba(255,255,255,0.16); }
+#haptix-panel button:disabled { opacity: 0.4; cursor: not-allowed; }
+#haptix-panel select, #haptix-panel input[type="range"] { width: 100%; }
+
+#haptix-panel .htx-bar { position: relative; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.12); overflow: hidden; }
+#haptix-panel #htx-aro-dot { position: absolute; top: 0; height: 8px; width: 3px; background: #fff; box-shadow: 0 0 2px #000; display: none; transform: translateX(-1px); }
+#haptix-panel .htx-bar > span { display: block; height: 100%; width: 0%; background: linear-gradient(90deg,#7a4,#e84); transition: width 0.2s; }
+#haptix-panel .htx-arousal > span { background: linear-gradient(90deg,#a4e,#e48); }
+
+#haptix-panel .htx-prompt {
+    margin: 8px 0; padding: 8px; border-radius: 6px;
+    background: rgba(230, 180, 60, 0.15); border: 1px solid rgba(230, 180, 60, 0.5);
+    text-align: center;
+}
+#haptix-panel .htx-consent { margin: 8px 0; padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.05); }
+#haptix-panel .htx-consent label { display: flex; gap: 6px; align-items: flex-start; cursor: pointer; }
+
+/* Always-visible emergency stop (shown only while armed) */
+#haptix-estop {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    z-index: 10011;
+    display: none;
+    background: #b1242c;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    padding: 10px 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+    cursor: pointer;
+}
+#haptix-estop.show { display: block; }
+#haptix-estop:hover { background: #d22b34; }
+
+#haptix-launch {
+    position: fixed; left: 12px; bottom: 12px; z-index: 10009;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid rgba(220, 120, 200, 0.5); background: rgba(20, 16, 24, 0.92);
+    color: #fff; font-size: 18px; cursor: pointer; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+}
+#haptix-launch:hover { background: rgba(40, 30, 48, 0.96); }
+
+#haptix-launch-state { font-size: 10px; padding: 1px 6px; border-radius: 8px; background: rgba(255,255,255,0.12); }
+#haptix-launch-state.ready { background: rgba(120, 220, 140, 0.3); }
+#haptix-launch-state.error { background: rgba(220, 90, 90, 0.4); }
