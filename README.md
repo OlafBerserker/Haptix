@@ -69,6 +69,16 @@ Haptix auto-detects the right command protocol when you connect. If your device 
 
 ---
 
+## Want your toy supported? 💌
+
+The supported list is short because **I can only build (and trust) support for hardware I can actually test** — and I own a tragically small drawer of devices. So:
+
+- **Your device isn't listed?** [Open an issue](https://github.com/OlafBerserker/Haptix/issues) and tell me exactly what you've got. If it speaks Bluetooth, it can probably be taught to behave.
+- **Really** want it supported? **Get in touch and send me one — brand-new, factory-sealed, fresh from the manufacturer, still in the shrink-wrap.** Please, for the love of all that is hygienic: **NOT your personal, well-loved favourite.** A *new in box* unit. I cannot reliably implement what I can't hold in my hand and watch buzz across the room — and I'd like to keep that hand. Your gadget becomes Officially Supported™ and immortalized in the changelog.
+- **PRs welcome** from anyone who's already reverse-engineered their device's BLE protocol.
+
+No toy too weird. (Okay, *some* toys too weird. Send them anyway.)
+
 ## Disclaimer
 
 Not affiliated with, endorsed by, or blessed by LELO or any device maker. Device protocol details are interoperability facts re-implemented from public sources. Use at your own risk, and possibly your own delight. No warranty, express or implied, including but not limited to fitness for *that* particular purpose.
