@@ -1,0 +1,11 @@
+{
+  "name": "haptix",
+  "version": "0.1.0",
+  "description": "Bring-your-own-haptics for SillyTavern. The scene moves, so do you.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node test/edge.test.mjs"
+  },
+  "license": "MIT"
+}
