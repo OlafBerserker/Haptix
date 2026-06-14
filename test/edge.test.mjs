@@ -16,6 +16,8 @@ import { getCommandPath, COMMAND_PATHS } from '../lib/lelo-command-path.js';
 import { SEQUENCES, createSequence } from '../lib/lelo-sequences.js';
 import { classifyMessage, classifyIncidental, calibrateCharacter } from '../lib/lelo-scene-classifier.js';
 import { createSensors } from '../lib/lelo-sensors.js';
+import { PROTOCOLS, PROTOCOL_IDS, encodeFor } from '../lib/protocols.js';
+import { rumbleMagnitudes } from '../lib/gamepad.js';
 
 // ---- tiny assert framework -------------------------------------------------
 let pass = 0, fail = 0; const fails = [];
@@ -383,6 +385,58 @@ t('unknown notify kind does not throw', () => {
     const s = createSensors();
     s.handleNotify('bogus', u8(1));
     ok(true, 'no throw');
+});
+
+// ============================================================================
+// 7. MULTI-BRAND PROTOCOLS (EXPERIMENTAL) — encoders must stay bounded for ANY input
+// ============================================================================
+
+t('every brand encoder produces bounded output for extreme inputs', () => {
+    for (const id of PROTOCOL_IDS) {
+        const p = PROTOCOLS[id];
+        for (const norm of [-5, 0, 0.5, 1, 99, NaN, Infinity]) {
+            const out = encodeFor(id, norm);
+            ok(out && (out.kind === 'text' || out.kind === 'bytes'), `${id} returns descriptor`);
+            if (out.kind === 'bytes') { for (const b of out.data) inRange(b, 0, 255, `${id} byte`); }
+            else { ok(typeof out.data === 'string' && out.data.length < 40, `${id} text sane`); }
+        }
+        const stop = p.stop();
+        if (stop.kind === 'bytes') ok(Array.from(stop.data).some((b) => b === 0), `${id} stop has zero`);
+        else ok(stop.data.includes('0'), `${id} stop text zero`);
+    }
+});
+
+t('lovense ASCII clamps 0..20 + dual-channel suffix', () => {
+    eq(encodeFor('lovense', 1).data, 'Vibrate:20;', 'full');
+    eq(encodeFor('lovense', 0).data, 'Vibrate:0;', 'zero');
+    eq(encodeFor('lovense', 99).data, 'Vibrate:20;', 'over clamps');
+    eq(encodeFor('lovense', -5).data, 'Vibrate:0;', 'under clamps');
+    eq(encodeFor('lovense', 0.5).data, 'Vibrate:10;', 'half');
+    eq(encodeFor('lovense', 0.5, 1).data, 'Vibrate2:10;', 'channel 2');
+});
+
+t('wevibe packs into 8 bytes', () => {
+    const out = encodeFor('wevibe', 1, 1);
+    eq(out.data.length, 8, '8-byte packet');
+    inRange(out.data[3], 0, 255, 'packed nibble byte');
+});
+
+t('unknown protocol -> null', () => { eq(encodeFor('nope', 0.5), null, 'unknown'); });
+
+// ============================================================================
+// 8. GAMEPAD RUMBLE — magnitude mapping bounded + monotonic
+// ============================================================================
+
+t('rumbleMagnitudes bounded for any input, strong>=weak, monotonic', () => {
+    for (const n of [-5, 0, 0.25, 0.5, 1, 99, NaN, Infinity]) {
+        const { strong, weak } = rumbleMagnitudes(n);
+        inRange(strong, 0, 1, 'strong');
+        inRange(weak, 0, 1, 'weak');
+        ok(strong >= weak, 'strong>=weak');
+    }
+    ok(rumbleMagnitudes(1).strong > rumbleMagnitudes(0.5).strong, 'monotonic');
+    eq(rumbleMagnitudes(0).strong, 0, 'zero -> zero');
+    eq(rumbleMagnitudes(NaN).strong, 0, 'NaN -> zero');
 });
 
 // ---- report ----------------------------------------------------------------
