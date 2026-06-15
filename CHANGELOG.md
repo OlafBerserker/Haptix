@@ -1,5 +1,16 @@
 # Haptix changelog
 
+## 0.2.1 — Priapistic Gooner (auto-update hotfix) (2026-06-14)
+
+- `manifest.json`: add `"auto_update": true`. Without this field,
+  SillyTavern's extension auto-updater will not pull future releases
+  even when the user has `extensions.autoUpdate: true` in their
+  global config. v0.2.0 shipped without it and users running v0.1
+  needed to manually update.
+
+After this fix lands, future Haptix releases will propagate
+automatically to every install that already has v0.2.1 (or later).
+
 ## 0.2.0 — Priapistic Gooner (2026-06-14)
 
 Total panel redesign. The dark-purple admin grid is gone; in its place is a
@@ -7,6 +18,7 @@ sticker-art floating control panel built from the repo's own icon set, with a
 proper phase-based flow.
 
 ### New
+
 - **Five-phase flow**: `IDLE` (find your toy) → `SCANNING` (animated ring +
   glowing connect icon) → `AUTH` (pulsing "boop the power button" prompt) →
   `CONNECTED` (device card, battery, consent gate, big green "Arm it ⚡") →
@@ -25,6 +37,7 @@ proper phase-based flow.
   (less mystery, more discoverability).
 
 ### Internal
+
 - New `lib/panel.js` (full rewrite, ~700 lines, no extra deps). One imperative
   `poll()` loop drives every visible signal from `bridge.getStatus()`.
 - Assets resolved via `new URL('../assets/...', import.meta.url).href` so the
@@ -35,11 +48,14 @@ proper phase-based flow.
   visual rules are inline in `panel.js` for tight token coupling).
 
 ### Design source
+
 - `claude.ai/design` handoff `Haptix Panel.dc.html` (see project history).
 
 ### SillyTavern auto-update
+
 - `manifest.json` version field bumped to `0.2.0` — SillyTavern's third-party
   extension updater will detect this on the next refresh and offer the update.
 
 ## 0.1.0
+
 - Initial release.
