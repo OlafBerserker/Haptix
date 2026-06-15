@@ -6,7 +6,7 @@
     "js": "index.js",
     "css": "style.css",
     "author": "OlafBerserker",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "auto_update": true,
     "homePage": "https://github.com/OlafBerserker/Haptix"
 }
