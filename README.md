@@ -67,9 +67,9 @@ Plus the features I built instead of sleeping:
 <td align="center"><img src="assets/icon-device.png" width="54"><br><sub>Device</sub></td>
 </tr>
 </table>
-
-*Generated locally, transparent-cut, and mildly cursed.*
-
+</tr>
+</tr>
+<td align="center"><img src="assets/interface.png" width="200"><br><sub></td>
 </div>
 
 ---
