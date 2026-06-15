@@ -9,7 +9,7 @@
 [![status: EARLY](https://img.shields.io/badge/status-EARLY%20(expect%20bugs)-orange.svg)](#its-early-okay)
 [![hardware](https://img.shields.io/badge/devices-1%20tested%2C%20infinite%20hope-ff69b4.svg)](#supported-devices)
 
-**`v0.1` — Alpha: *Undying Shimmering***
+**`v0.2` — Beta: *Priapistic Gooner***
 
 ![Haptix](assets/hero.png)
 
