@@ -1,6 +1,6 @@
 {
     "name": "haptix",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "Bring-your-own-haptics for SillyTavern. The scene moves, so do you.",
     "type": "module",
     "private": true,
